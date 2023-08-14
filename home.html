@@ -5,6 +5,11 @@
 
   <title>Bing Maps API</title>
   <style>
+    .heading{
+      padding-top: 20px;
+      color: rgb(241, 245, 249);
+      letter-spacing: 7px;
+    }
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -13,8 +18,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      background-color: #f5f5f5;
+      height: 100%;
+      background-color: #333;
     }
 
     #mapContainer {
@@ -22,12 +27,22 @@
       height: 70vh;
       border: 2px solid #333;
       border-radius: 5px;
+      position: relative; 
+    }
+
+    #myCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding-bottom: 100px;
+      margin-bottom: 20px; 
     }
 
     #getLocationButton {
-      margin-top: 20px;
       padding: 10px 20px;
-      background-color: #007bff;
+      background-color: #0a978b;
       color: white;
       border: none;
       border-radius: 5px;
@@ -37,13 +52,33 @@
     #getLocationButton:hover {
       background-color: #0056b3;
     }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+    }
+
+    footer {
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: relative;
+    }
+
   </style>
 </head>
 <body>
-  <h1>Where am I?</h1>
+  <div class="content">
+  <h1 class="heading">CITY EXPLORATION</h1>
   <button id="getLocationButton">Get My Location</button>
-  <div id="mapContainer"></div>
-
+  <br>
+  <div id="mapContainer">
+    <canvas id="myCanvas"></canvas>
+  </div>
+</div>
   <script>
     var map;
 
@@ -53,13 +88,21 @@
       });
     }
 
-    function locateSuccess(position) {
-      var center = new Microsoft.Maps.Location(position.coords.latitude, position.coords.longitude);
-      map.setView({ center: center, zoom: 10 });
+  function locateSuccess(position) {
+    var center = new Microsoft.Maps.Location(position.coords.latitude, position.coords.longitude);
+    map.setView({ center: center, zoom: 10 });
 
-      var pushpin = new Microsoft.Maps.Pushpin(center, {});
-      map.entities.push(pushpin);
-    }
+    var canvas = document.getElementById("myCanvas");
+    var context = canvas.getContext("2d");
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    context.beginPath();
+    context.arc(canvas.width / 2, canvas.height / 2, 10, 0, 2 * Math.PI);
+    context.fillStyle = "red";
+    context.fill();
+    context.closePath();
+  }
 
     function locateFail(error) {
       alert("Geolocation failed: " + error.message);
@@ -76,5 +119,9 @@
     document.getElementById("getLocationButton").addEventListener("click", getMyLocation);
   </script>
   <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=loadMap' async defer></script>
+
+<footer>
+  <p>&copy; 2023 City Exploration | Created by rajasreebaruri</p>
+</footer>
 </body>
 </html>
